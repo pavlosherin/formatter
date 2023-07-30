@@ -1,0 +1,28 @@
+{
+  "name": "@pavlo.sherin/formatter",
+  "version": "1.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "private": false,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavlosherin/formatter.git"
+  },
+  "author": "Pavlo Sherin",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/pavlosherin/formatter/issues"
+  },
+  "homepage": "https://github.com/pavlosherin/formatter#readme",
+  "devDependencies": {
+    "typescript": "^4.7.3"
+  }
+}
