@@ -62,13 +62,13 @@ var NumberFormatter = /** @class */ (function () {
         };
     }
     NumberFormatter.prototype._parseMask = function (mask) {
-        var reversedMask = mask.split('').reverse().join('');
-        var _a = reversedMask.match(/[,.\s]/g) || ['', null, null], _decimalSeparatorMatch = _a[0], _thousandSeparatorMatch = _a[1], _isNotDecimalMatch = _a[2];
-        var _decimalSeparator = _decimalSeparatorMatch && _decimalSeparatorMatch[0];
-        var _thousandsSeparator = (_thousandSeparatorMatch && _thousandSeparatorMatch[0]) ||
-            _decimalSeparator;
-        var _isNumericMask = _isNotDecimalMatch === undefined;
-        var _isWithoutDecimal = _thousandSeparatorMatch === undefined;
+        var _a, _b, _c, _d, _e, _f;
+        var _thousandsSeparator = (_c = (_b = (_a = mask
+            .match(/^[#0]+[,.\s]?[#0]{3}/g)) === null || _a === void 0 ? void 0 : _a.shift()) === null || _b === void 0 ? void 0 : _b.replace(/[#0]/g, '')) !== null && _c !== void 0 ? _c : '';
+        var _decimalSeparator = (_f = (_e = (_d = mask
+            .match(/[#0]{3}[,.]?[#0]*$/g)) === null || _d === void 0 ? void 0 : _d.pop()) === null || _e === void 0 ? void 0 : _e.replace(/[#0]/g, '')) !== null && _f !== void 0 ? _f : '';
+        var _isWithoutDecimal = _decimalSeparator === '';
+        var _isNumericMask = (/^([#0]+[,.\s]?[#0]{3})|([#0]{3}[,.]?[#0]*)$/g).test(mask);
         return [_decimalSeparator, _thousandsSeparator, _isNumericMask, _isWithoutDecimal];
     };
     NumberFormatter.prototype.formatNumber = function (number, mask) {

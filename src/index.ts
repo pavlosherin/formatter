@@ -1,18 +1,15 @@
 export class NumberFormatter {
   private _parseMask(mask: string): [_decimalSeparator: string, _thousandsSeparator: string, _isNumericMask: boolean, _isWithoutDecimal: boolean] {
-    const reversedMask = mask.split('').reverse().join('');
-    const [
-      _decimalSeparatorMatch,
-      _thousandSeparatorMatch,
-      _isNotDecimalMatch,
-    ] = reversedMask.match(/[,.\s]/g) || ['', null, null];
-    const _decimalSeparator =
-      _decimalSeparatorMatch && _decimalSeparatorMatch[0];
-    const _thousandsSeparator =
-      (_thousandSeparatorMatch && _thousandSeparatorMatch[0]) ||
-      _decimalSeparator;
-    const _isNumericMask = _isNotDecimalMatch === undefined;
-    const _isWithoutDecimal = _thousandSeparatorMatch === undefined;
+    const _thousandsSeparator = mask
+      .match(/^[#0]+[,.\s]?[#0]{3}/g)
+      ?.shift()
+      ?.replace(/[#0]/g, '') ?? '';
+    const _decimalSeparator = mask
+      .match(/[#0]{3}[,.]?[#0]*$/g)
+      ?.pop()
+      ?.replace(/[#0]/g, '') ?? '';
+    const _isWithoutDecimal = _decimalSeparator === '';
+    const _isNumericMask = (/^([#0]+[,.\s]?[#0]{3})|([#0]{3}[,.]?[#0]*)$/g).test(mask);
 
     return [_decimalSeparator, _thousandsSeparator, _isNumericMask, _isWithoutDecimal];
   }
