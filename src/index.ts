@@ -91,7 +91,9 @@ export class NumberFormatter {
     const [_decimalSeparator, _thousandsSeparator, _isNumericMask, _isWithoutDecimal] = this._parseMask(mask);
     let res = '';
     res = (formattedNumber as string).replace(_thousandsSeparator, '');
-    res = res.replace(_decimalSeparator, '.');
+    if (!_isWithoutDecimal) {
+      res = res.replace(_decimalSeparator, '.');
+    }
     return parseFloat(res);
   }
 }
