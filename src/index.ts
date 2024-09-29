@@ -196,7 +196,7 @@ export class FormatterService {
     entityFormatMask?: string
   ): string | number | unknown {
     if (typeof value !== 'number') {
-      value = parseInt(value as string, 10);
+      value = parseFloat(value as string);
     }
     if (entityFormatMask) {
       return this.formatNumber(<number>value, entityFormatMask);
