@@ -29,13 +29,16 @@ export class NumberFormatter {
     }
 
     const [_decimalSeparator, _thousandsSeparator, _isNumericMask, _isWithoutDecimal] = this._parseMask(mask);
+    let _number;
 
     // Format decimal number
     if (_isNumericMask) {
       let _preFormattedDecimals = '';
-      let _number = Math.round(number).toString(10);
 
-      if (!_isWithoutDecimal) {
+      if (_isWithoutDecimal) {
+        _number = Math.round(number).toString(10);
+      } else {
+        _number = Math.floor(number).toString(10);
         // handle decimals
         const [_numberMask, _decimalsMask] = mask.split(_decimalSeparator);
         const _requiredDecimalsLength = (_decimalsMask?.match(/[0]/g) ?? []).length;
@@ -56,7 +59,6 @@ export class NumberFormatter {
         if (_preFormattedDecimals.length > 0) {
           _preFormattedDecimals = _decimalSeparator + _preFormattedDecimals;
         }
-
       }
 
       // handle number
