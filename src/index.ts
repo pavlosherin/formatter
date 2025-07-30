@@ -103,18 +103,32 @@ export class NumberFormatter {
 }
 
 export class DateFormatter {
-  public mapMomentFormatToPrimeNG(momentFormat: string): string {
-    return momentFormat?.replace(
+  public mapPrimeNGToMomentFormat(primengFormat: string): string {
+    return primengFormat?.replace(
       /([a-zA-Z])\1+/g,
-      match => this._convertDateFormatPart(match) || match
+      match => this._convertPrimengDateFormatPart(match) || match
     );
   }
 
-  private _convertDateFormatPart(momentFormat: string): string {
-    const matchingMapping = this._datePartFormatsMapper.filter(
+  public mapMomentFormatToPrimeNG(momentFormat: string): string {
+    return momentFormat?.replace(
+      /([a-zA-Z])\1+/g,
+      match => this._convertMomentDateFormatPart(match) || match
+    );
+  }
+
+  private _convertMomentDateFormatPart(momentFormat: string): string {
+    const matchingMapping = this._datePartFormatsMapper.find(
       mapping => mapping.momentFormatPart === momentFormat
-    )[0];
+    );
     return matchingMapping ? matchingMapping.primengFormatPart : momentFormat;
+  }
+
+  private _convertPrimengDateFormatPart(primengFormat: string): string {
+    const matchingMapping = this._datePartFormatsMapper.find(
+        mapping => mapping.primengFormatPart === primengFormat
+    );
+    return matchingMapping ? matchingMapping.momentFormatPart : primengFormat;
   }
 
   private _datePartFormatsMapper: {
