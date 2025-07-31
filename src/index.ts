@@ -232,10 +232,10 @@ export class FormatterService {
     mask?: string,
     value?: string | number | Date | null | undefined,
     enumValues?: any[],
-  }): string {
-    // Check if the value is null or undefined, and return an empty string if so.
+  }): string | undefined {
+    // Check if the value is null or undefined, and return undefined if so.
     if (params.value === null || params.value === undefined) {
-      return '';
+      return undefined;
     }
 
     // Ensure value is of type string, number, or Date.
