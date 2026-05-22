@@ -1,4 +1,4 @@
-import moment from 'moment/moment';
+import { DateTime } from 'luxon';
 
 export class NumberFormatter {
   private _parseMask(mask: string): [_decimalSeparator: string, _thousandsSeparator: string, _isNumericMask: boolean, _isWithoutDecimal: boolean] {
@@ -103,59 +103,54 @@ export class NumberFormatter {
 }
 
 export class DateFormatter {
-  public mapPrimeNGToMomentFormat(primengFormat: string): string {
+  public mapPrimeNGToLuxonFormat(primengFormat: string): string {
     return primengFormat?.replace(
-      /([a-zA-Z])\1+/g,
+      /([a-zA-Z])\1*/g,
       match => this._convertPrimengDateFormatPart(match) || match
     );
   }
 
-  public mapMomentFormatToPrimeNG(momentFormat: string): string {
-    return momentFormat?.replace(
-      /([a-zA-Z])\1+/g,
-      match => this._convertMomentDateFormatPart(match) || match
+  public mapLuxonFormatToPrimeNG(luxonFormat: string): string {
+    return luxonFormat?.replace(
+      /([a-zA-Z])\1*/g,
+      match => this._convertLuxonDateFormatPart(match) || match
     );
   }
 
-  private _convertMomentDateFormatPart(momentFormat: string): string {
+  private _convertLuxonDateFormatPart(luxonFormat: string): string {
     const matchingMapping = this._datePartFormatsMapper.find(
-      mapping => mapping.momentFormatPart === momentFormat
+      mapping => mapping.luxonFormatPart === luxonFormat
     );
-    return matchingMapping ? matchingMapping.primengFormatPart : momentFormat;
+    return matchingMapping ? matchingMapping.primengFormatPart : luxonFormat;
   }
 
   private _convertPrimengDateFormatPart(primengFormat: string): string {
     const matchingMapping = this._datePartFormatsMapper.find(
-        mapping => mapping.primengFormatPart === primengFormat
+      mapping => mapping.primengFormatPart === primengFormat
     );
-    return matchingMapping ? matchingMapping.momentFormatPart : primengFormat;
+    return matchingMapping ? matchingMapping.luxonFormatPart : primengFormat;
   }
 
   private _datePartFormatsMapper: {
-    momentFormatPart: string;
+    luxonFormatPart: string;
     primengFormatPart: string;
   }[] = [
-    { momentFormatPart: 'YYYY', primengFormatPart: 'yy' }, // year (four digit)
-    { momentFormatPart: 'YY', primengFormatPart: 'y' }, // year (two digit)
-    { momentFormatPart: 'MMMM', primengFormatPart: 'MM' }, // month name long
-    { momentFormatPart: 'MMM', primengFormatPart: 'M' }, // month name short
-    { momentFormatPart: 'MM', primengFormatPart: 'mm' }, // month of year (two digit)
-    { momentFormatPart: 'M', primengFormatPart: 'm' }, // month of year (no leading zero)
-    { momentFormatPart: 'DD', primengFormatPart: 'dd' }, // day of month (two digit)
-    { momentFormatPart: 'D', primengFormatPart: 'd' }, // day of month (no leading zero)
-    { momentFormatPart: 'HH', primengFormatPart: 'HH' },
-    { momentFormatPart: 'hh', primengFormatPart: 'hh' },
-    { momentFormatPart: 'mm', primengFormatPart: 'mm' },
-    { momentFormatPart: 'ss', primengFormatPart: 'ss' },
+    { luxonFormatPart: 'yyyy', primengFormatPart: 'yy' }, // year (four digit)
+    { luxonFormatPart: 'yy', primengFormatPart: 'y' }, // year (two digit)
+    { luxonFormatPart: 'MMMM', primengFormatPart: 'MM' }, // month name long
+    { luxonFormatPart: 'MMM', primengFormatPart: 'M' }, // month name short
+    { luxonFormatPart: 'MM', primengFormatPart: 'mm' }, // month of year (two digit)
+    { luxonFormatPart: 'M', primengFormatPart: 'm' }, // month of year (no leading zero)
+    { luxonFormatPart: 'dd', primengFormatPart: 'dd' }, // day of month (two digit)
+    { luxonFormatPart: 'd', primengFormatPart: 'd' }, // day of month (no leading zero)
+    { luxonFormatPart: 'HH', primengFormatPart: 'HH' },
+    { luxonFormatPart: 'hh', primengFormatPart: 'hh' },
+    { luxonFormatPart: 'mm', primengFormatPart: 'mm' },
+    { luxonFormatPart: 'ss', primengFormatPart: 'ss' },
   ];
 }
 
 export class FormatterService {
-
-  set moment(moment: any) {
-    this._moment = moment;
-  }
-  private _moment?: any;
 
   private _numberFormatter: NumberFormatter = new NumberFormatter();
 
@@ -164,7 +159,7 @@ export class FormatterService {
   }
 
   /**
-   * According to MomentJs patterns
+   * According to Luxon patterns
    * @param lang
    */
   getBaseDateFormat(lang: string): string {
@@ -173,13 +168,13 @@ export class FormatterService {
     dateParts.forEach(part => {
       switch (part.type) {
         case 'day':
-          res += part.value.replaceAll(/[0-9]/g, 'D');
+          res += part.value.replaceAll(/[0-9]/g, 'd');
           break;
         case 'month':
           res += part.value.replaceAll(/[0-9]/g, 'M');
           break;
         case 'year':
-          res += part.value.replaceAll(/[0-9]/g, 'Y');
+          res += part.value.replaceAll(/[0-9]/g, 'y');
           break;
         case 'literal':
           res += part.value;
@@ -255,8 +250,8 @@ export class FormatterService {
         break;
       case 'datetime':
         // Format date and time values using the specified mask or default format.
-        formattedValue = this._moment(new Date(params.value)).format(
-          params?.mask ?? this._moment.defaultFormat
+        formattedValue = DateTime.fromJSDate(new Date(params.value)).toFormat(
+          params?.mask ?? 'yyyy-MM-dd HH:mm:ss'
         );
         break;
       case 'selection':
